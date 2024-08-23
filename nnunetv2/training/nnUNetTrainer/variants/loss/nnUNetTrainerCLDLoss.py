@@ -2,6 +2,7 @@ from nnunetv2.training.nnUNetTrainer.nnUNetTrainer import nnUNetTrainer
 from nnunetv2.training.loss.clDice import clDice
 from nnunetv2.training.loss.compound_losses import DC_and_CE_loss
 from nnunetv2.training.loss.dice import MemoryEfficientSoftDiceLoss
+from nnunetv2.utilities.helpers import softmax_helper_dim1
 import torch
 
 
@@ -31,7 +32,8 @@ class nnUNetTrainerCLDLoss(nnUNetTrainer):
             dc_ce = DC_and_CE_loss({'batch_dice': self.configuration_manager.batch_dice,
                                    'smooth': 1e-5, 'do_bg': False, 'ddp': self.is_ddp}, {}, weight_ce=1, weight_dice=1,
                                   ignore_label=self.label_manager.ignore_label, dice_class=MemoryEfficientSoftDiceLoss)
-            cl = clDice(batch_dice=self.configuration_manager.batch_dice, smooth=1e-5, do_bg=False, ddp=self.is_ddp)
+            cl = clDice(batch_dice=self.configuration_manager.batch_dice, smooth=1e-5, do_bg=False, ddp=self.is_ddp,
+                        apply_nonlin=softmax_helper_dim1)
 
             loss = combinedLoss(dc_ce, cl, weight1=1, weight2=1)
 

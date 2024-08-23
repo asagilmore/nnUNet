@@ -589,14 +589,14 @@ class clDice(torch.nn.Module):
         shp_x = x.shape
 
         if self.apply_nonlin is not None:
-            pred = self.apply_nonlin(x)
+            x = self.apply_nonlin(x)
 
         if self.batch_dice:
             axes = [0] + list(range(2, len(shp_x)))
         else:
             axes = list(range(2, len(shp_x)))
 
-        dc = self._get_centerline_dice_coefficent(pred, y, axes, loss_mask, square=False)
+        dc = self._get_centerline_dice_coefficent(x, y, axes, loss_mask, square=False)
 
         if not self.do_bg:
             if self.batch_dice:
@@ -622,7 +622,7 @@ class clDice(torch.nn.Module):
             else:
                 y_onehot = torch.zeros(net_output.shape,
                                        device=net_output.device,
-                                       type=torch.bool)
+                                       dtype=torch.bool)
                 y_onehot.scatter_(1, gt.long(), 1)
 
         pred_skeleton = self.skeletonize(net_output)
