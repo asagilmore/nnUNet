@@ -1,4 +1,4 @@
-from nnunetv2.training.nnUNetTrainer.nnUNetTrainer import nnUNetTrainer, nnUNetTrainerNoDeepSupervision
+from nnunetv2.training.nnUNetTrainer.nnUNetTrainer.network_architechture.nnUNetTrainerNoDeepSupervision import nnUNetTrainerNoDeepSupervision
 from nnunetv2.training.loss.clDice import clDice
 from nnunetv2.training.loss.compound_losses import DC_and_CE_loss
 from torch import nn
