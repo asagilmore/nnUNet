@@ -31,7 +31,7 @@ class nnUNetTrainerCLDLoss(nnUNetTrainer):
             dc_ce = DC_and_CE_loss({'batch_dice': self.configuration_manager.batch_dice,
                                    'smooth': 1e-5, 'do_bg': False, 'ddp': self.is_ddp}, {}, weight_ce=1, weight_dice=1,
                                   ignore_label=self.label_manager.ignore_label, dice_class=MemoryEfficientSoftDiceLoss)
-            cl = clDice()
+            cl = clDice(batch_dice=self.configuration_manager.batch_dice, smooth=1e-5, do_bg=False, ddp=self.is_ddp)
 
             loss = combinedLoss(dc_ce, cl, weight1=1, weight2=1)
 
