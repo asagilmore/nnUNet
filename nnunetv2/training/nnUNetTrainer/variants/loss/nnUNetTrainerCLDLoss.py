@@ -1,4 +1,4 @@
-from nnunetv2.training.nnUNetTrainer.nnUNetTrainer.network_architechture.nnUNetTrainerNoDeepSupervision import nnUNetTrainerNoDeepSupervision
+from nnunetv2.training.nnUNetTrainer.nnUNetTrainer import nnUNetTrainer
 from nnunetv2.training.loss.clDice import clDice
 from nnunetv2.training.loss.compound_losses import DC_and_CE_loss
 from torch import nn
@@ -20,13 +20,22 @@ class combinedLossCLD(nn.Module):
         return self.dc_ce_weight * dc_ce_loss + self.cl_weight * cl_loss
 
 
-class nnUNetTrainerCLDLoss(nnUNetTrainerNoDeepSupervision):
+class nnUNetTrainerCLDLoss(nnUNetTrainer):
     def _build_loss_clDice(self):
         if self.label_manager.has_regions:
             raise NotImplementedError("clDice loss is not implemented for sparse segmentation")
         else:
             self.loss = combinedLossCLD(dc_ce_weight=1, cl_weight=1)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        plans: dict,
+        configuration: str,
+        fold: int,
+        dataset_json: dict,
+        unpack_dataset: bool = True,
+        device: torch.device = torch.device("cuda"),
+    ):
         self._build_loss = self._build_loss_clDice
-        super(nnUNetTrainerCLDLoss, self).__init__(*args, **kwargs)
+        super().__init__(plans, configuration, fold, dataset_json, unpack_dataset, device)
+        self.enable_deep_supervision = False
