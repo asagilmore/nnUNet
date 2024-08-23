@@ -562,7 +562,18 @@ class clDice(torch.nn.Module):
         super(clDice, self).__init__()
         self.skeletonize = Skeletonize(**kwargs)
 
+    def normalize(self, tensor):
+        min_val = tensor.min()
+        max_val = tensor.max()
+        tensor = (tensor - min_val) / (max_val - min_val)
+
+        return tensor
+
     def forward(self, pred, target):
+
+        pred = self.normalize(pred)
+        target = self.normalize(target)
+
         cl_pred = self.skeletonize(pred)
         target_skeleton = self.skeletonize(target)
         iflat = norm_intersection(cl_pred, target)
