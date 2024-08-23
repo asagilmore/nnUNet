@@ -570,20 +570,20 @@ class clDice(torch.nn.Module):
         super(clDice, self).__init__()
         self.do_bg = do_bg
         self.batch_dice = batch_dice
-        self.skeletonize = Skeletonize(**kwargs)
+        self.skeletonize = Skeletonize()
         self.apply_nonlin = apply_nonlin
         self.smooth = smooth
         self.clip_tp = clip_tp
         if ddp:
             raise NotImplementedError("ddp is not implemented for centerline dice")
 
-    def skeletonize(self, x):
+    def skeletonize_all_channels(self, x):
         if x.shape[1] != 1:
             channels = torch.split(x, 1, dim=1)
-            skeletons = [soft_skeletonize(c) for c in channels]
+            skeletons = [self.skeletonize(c) for c in channels]
             return torch.cat(skeletons, dim=1)
         else:
-            return soft_skeletonize(x)
+            return self.skeletonize(x)
 
     def forward(self, x, y, loss_mask=None):
         shp_x = x.shape
@@ -622,11 +622,11 @@ class clDice(torch.nn.Module):
             else:
                 y_onehot = torch.zeros(net_output.shape,
                                        device=net_output.device,
-                                       dtype=torch.bool)
+                                       dtype=torch.float32)
                 y_onehot.scatter_(1, gt.long(), 1)
 
-        pred_skeleton = self.skeletonize(net_output)
-        target_skeleton = self.skeletonize(y_onehot)
+        pred_skeleton = self.skeletonize_all_channels(net_output)
+        target_skeleton = self.skeletonize_all_channels(y_onehot)
 
         iflat = norm_intersection(pred_skeleton, y_onehot)
         tflat = norm_intersection(target_skeleton, net_output)
