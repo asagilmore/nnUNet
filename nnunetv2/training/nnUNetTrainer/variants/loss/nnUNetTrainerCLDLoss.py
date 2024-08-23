@@ -1,9 +1,9 @@
 from nnunetv2.training.nnUNetTrainer.nnUNetTrainer import nnUNetTrainer
 from nnunetv2.training.loss.clDice import clDice
 from nnunetv2.training.loss.compound_losses import DC_and_CE_loss
-from torch import nn
+import torch
 
-class combinedLossCLD(nn.Module):
+class combinedLossCLD(torch.nn.Module):
     def __init__(self, dc_ce_weight=1, cl_weight=1):
         super(combinedLossCLD, self).__init__()
         self.dc_ce = DC_and_CE_loss({'batch_dice': False, 'smooth': 1e-5, 'do_bg': False})
