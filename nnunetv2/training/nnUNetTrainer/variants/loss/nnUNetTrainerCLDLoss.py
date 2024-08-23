@@ -20,7 +20,7 @@ class combinedLossCLD(nn.Module):
         return self.dc_ce_weight * dc_ce_loss + self.cl_weight * cl_loss
 
 
-class clDicennUNetTrainer(nnUNetTrainerNoDeepSupervision):
+class nnUNetTrainerCLDLoss(nnUNetTrainerNoDeepSupervision):
     def _build_loss_clDice(self):
         if self.label_manager.has_regions:
             raise NotImplementedError("clDice loss is not implemented for sparse segmentation")
@@ -29,4 +29,4 @@ class clDicennUNetTrainer(nnUNetTrainerNoDeepSupervision):
 
     def __init__(self, *args, **kwargs):
         self._build_loss = self._build_loss_clDice
-        super(clDicennUNetTrainer, self).__init__(*args, **kwargs)
+        super(nnUNetTrainerCLDLoss, self).__init__(*args, **kwargs)
