@@ -52,8 +52,7 @@ dependencies = [
     "yacs",
     "batchgeneratorsv2>=0.2",
     "einops",
-    "antspyx",
-    "intensity-normalization"
+    "antspyx"
 ]
 
 [project.urls]
