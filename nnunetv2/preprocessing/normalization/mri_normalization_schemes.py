@@ -12,8 +12,8 @@ t2_nyul_path = "nyul_t2.npy"
 class MRINormalization(ImageNormalization):
     leaves_pixels_outside_mask_at_zero_if_use_mask_for_norm_is_true = True
 
-    def __init__(self):
-        super(MRINormalization, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(MRINormalization, self).__init__(*args, **kwargs)
         self.nyul = NyulNormalize()
         self.zscore = ZScoreNormalization(use_mask_for_norm=self.use_mask_for_norm)
         self.modality = None
@@ -40,14 +40,14 @@ class MRINormalization(ImageNormalization):
 
 
 class MRINormalizationT1(MRINormalization):
-    def __init__(self):
-        super(MRINormalizationT1, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(MRINormalizationT1, self).__init__(*args, **kwargs)
         self.nyul.load(t1_nyul_path)
 
 
 class MRINormalizationT2(MRINormalization):
-    def __init__(self):
-        super(MRINormalizationT2, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(MRINormalizationT2, self).__init__(*args, **kwargs)
         self.nyul.load(t2_nyul_path)
 
 
