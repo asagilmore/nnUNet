@@ -44,14 +44,9 @@ class MRINormalization(ImageNormalization):
         if self.use_mask_for_norm:
             mask = seg >= 0
             normalized_image[~mask] = 0
-        # n4 bias field correction
-        ants_image = ants.from_numpy(masked_image)
-        ants_image = ants.n4_bias_field_correction(ants_image)
-
-        numpy_image = ants_image.numpy()
 
         # nyul normalization
-        normalized_image = self.nyul.normalize_image(numpy_image)
+        normalized_image = self.nyul.normalize_image(normalized_image)
 
         return normalized_image
 
