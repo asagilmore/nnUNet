@@ -1,12 +1,13 @@
 import ants
 import numpy as np
+import os
 
 from .default_normalization_schemes import ImageNormalization, ZScoreNormalization
 
-
+current_dir = os.path.dirname(os.path.abspath(__file__))
 # precomputed nyul percentiles from IXI training data.
-t1_nyul_path = "nyul_t1.npy"
-t2_nyul_path = "nyul_t2.npy"
+t1_nyul_path = os.path.join(current_dir, "nyul_t1.npy")
+t2_nyul_path = os.path.join(current_dir, "nyul_t2.npy")
 
 
 class MRINormalization(ImageNormalization):
